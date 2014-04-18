@@ -26,25 +26,24 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         MySQLiteOpenHelper mHelper = new MySQLiteOpenHelper(getApplicationContext());
-        mydb = mHelper.getReadableDatabase();
-        Cursor cursor = mydb.query("lunch_point", new String[]{"name"}, null, null, null, null, "_id DESC");
-        cursor.moveToFirst();
-        final List<String> columns = new ArrayList<String>();
-        for (boolean next = cursor.moveToFirst(); next; next = cursor.moveToNext()) {
-            columns.add(cursor.getString(0));
-        }
-
-        final Random random = new Random();
+        mydb = mHelper.getWritableDatabase();
 
         Button decideButton = (Button) findViewById(R.id.decide_button);
         decideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, columns.get(random.nextInt(columns.size())) + "に行きましょう", Toast.LENGTH_SHORT).show();
+                // DBの中からランダムのとこに行きましょう
+                Cursor cursor = mydb.query("lunch_point", new String[]{"name"}, null, null, null, null, "_id DESC");
+                cursor.moveToFirst();
+                final List<String> records = new ArrayList<String>();
+                // cursorの中身ぜんぶrecordsにつめこむ
+                for (boolean next = cursor.moveToFirst(); next; next = cursor.moveToNext()) {
+                    records.add(cursor.getString(0));
+                }
+                Toast.makeText(MainActivity.this, records.get(new Random().nextInt(records.size())) + "に行きましょう", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -58,6 +57,9 @@ public class MainActivity extends Activity {
         if (id == R.id.action_add) {
             startActivity(new Intent(this, AddActivity.class));
             return true;
+        }
+        if (id == R.id.action_list) {
+            startActivity(new Intent(this, PointListActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

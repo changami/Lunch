@@ -3,7 +3,8 @@
 
     <string name="app_name">おひるごはんを決めてくれるやつ</string>
     <string name="decide">決めましょう！</string>>
-    <string name="action_settings">ごはんのばしょ追加</string>
+    <string name="action_add">ごはんのばしょ追加</string>
+    <string name="action_list">登録したばしょを見る</string>
     <string name="point_name">なまえ</string>
     <string name="add">追加する</string>
 
