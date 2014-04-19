@@ -34,7 +34,6 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 // DBの中からランダムのとこに行きましょう
                 Cursor cursor = mydb.query("lunch_point", new String[]{"name"}, null, null, null, null, "_id DESC");
-                cursor.moveToFirst();
                 final List<String> records = new ArrayList<String>();
                 // cursorの中身ぜんぶrecordsにつめこむ
                 for (boolean next = cursor.moveToFirst(); next; next = cursor.moveToNext()) {
