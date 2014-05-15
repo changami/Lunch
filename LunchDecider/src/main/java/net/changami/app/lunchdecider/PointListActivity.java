@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.TextView;
+import android.widget.*;
+import net.changami.app.lunchdecider.data.LunchPointDao;
+import net.changami.app.lunchdecider.data.LunchPointEntity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by chan_gami on 2014/04/19.
@@ -30,23 +32,28 @@ public class PointListActivity extends ListActivity {
         MySQLiteOpenHelper mHelper = new MySQLiteOpenHelper(getApplicationContext());
         mydb = mHelper.getWritableDatabase();
 
-        Cursor cursor = mydb.query("lunch_point", new String[]{"name", "lasttime"}, null, null, null, null, "_id DESC");
+        LunchPointDao dao = new LunchPointDao(mydb);
+        List<LunchPointEntity> entities = dao.findAll();
         List<ListItem> items = new ArrayList<ListItem>();
-        if (cursor.moveToFirst()) {
-            do {
-                items.add(new ListItem(
-                        cursor.getString(cursor.getColumnIndex("name")),
-                        cursor.getString(cursor.getColumnIndex("lasttime"))
-                ));
-            } while (cursor.moveToNext());
+        for(LunchPointEntity entity : entities) {
+            items.add(new ListItem(
+                    entity.getPointName(),
+                    (new SimpleDateFormat("yyyy-MM-dd", Locale.JAPANESE)).format(entity.getLastTime())
+            ));
         }
         ListAdapter adapter = new ListItemAdapter(this, items);
         setListAdapter(adapter);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        ListView listView = getListView();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListItem item = (ListItem) parent.getItemAtPosition(position);
+                Toast.makeText(PointListActivity.this, item.pointName, Toast.LENGTH_SHORT).show();
+
+                //くりっくいべんとを取得した後にどうするの
+            }
+        });
     }
 
     class ListItem {
@@ -96,4 +103,6 @@ public class PointListActivity extends ListActivity {
         }
 
     }
+
+
 }
