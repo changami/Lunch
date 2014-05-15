@@ -11,7 +11,7 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
     static final String DB = "sqlite_lunch.db";
     static final int DB_VERSION = 1;
-    static final String CREATE_TABLE = "create table lunch_point ( _id integer primary key autoincrement, name text not null, lasttime text);";
+    static final String CREATE_TABLE = "create table lunch_point ( _id integer primary key autoincrement, name text not null, last_time text);";
     static final String DROP_TABLE = "drop table lunch_point;";
 
     public MySQLiteOpenHelper(Context context) {
