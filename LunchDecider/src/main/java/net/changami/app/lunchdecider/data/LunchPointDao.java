@@ -52,17 +52,11 @@ public class LunchPointDao {
             entity.setId(cursor.getInt(0));
             entity.setPointName(cursor.getString(1));
             //SQLiteはDate型ないもん
-            Date lastTime = new Date();
             try {
-                if (cursor.getString(2) == null) {
-                    lastTime = new Date();
-                } else {
-                    lastTime = SDF.parse(cursor.getString(2));
-                }
+                entity.setLastTime(SDF.parse(cursor.getString(2)));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            entity.setLastTime(lastTime);
             entityList.add(entity);
         }
 
