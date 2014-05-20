@@ -2,7 +2,6 @@ package net.changami.app.lunchdecider;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import net.changami.app.lunchdecider.data.LunchPointDao;
+import net.changami.app.lunchdecider.data.LunchPointEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
     static SQLiteDatabase mydb;
+    static LunchPointDao dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,19 +29,25 @@ public class MainActivity extends Activity {
 
         MySQLiteOpenHelper mHelper = new MySQLiteOpenHelper(getApplicationContext());
         mydb = mHelper.getWritableDatabase();
+        dao = new LunchPointDao(mydb);
 
         Button decideButton = (Button) findViewById(R.id.decide_button);
         decideButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // DBの中からランダムのとこに行きましょう
-                Cursor cursor = mydb.query("lunch_point", new String[]{"name"}, null, null, null, null, "_id DESC");
+
                 final List<String> records = new ArrayList<String>();
-                // cursorの中身ぜんぶrecordsにつめこむ
-                for (boolean next = cursor.moveToFirst(); next; next = cursor.moveToNext()) {
-                    records.add(cursor.getString(0));
+
+                List<LunchPointEntity> entities = dao.findAll();
+                for (LunchPointEntity entity : entities) {
+                    records.add(entity.getPointName());
                 }
-                Toast.makeText(MainActivity.this, records.get(new Random().nextInt(records.size())) + "に行きましょう", Toast.LENGTH_SHORT).show();
+
+                if (records.size() != 0) {
+                    Toast.makeText(MainActivity.this, records.get(new Random().nextInt(records.size())) + "に行きましょう", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "おひるごはんたべるところがありません", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
