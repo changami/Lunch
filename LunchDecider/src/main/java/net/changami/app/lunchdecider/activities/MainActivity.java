@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider;
+package net.changami.app.lunchdecider.activities;
 
 
 import android.app.Activity;
@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import net.changami.app.lunchdecider.AddActivity;
+import net.changami.app.lunchdecider.MySQLiteOpenHelper;
+import net.changami.app.lunchdecider.PointListActivity;
+import net.changami.app.lunchdecider.R;
 import net.changami.app.lunchdecider.data.LunchPointDao;
 import net.changami.app.lunchdecider.data.LunchPointEntity;
 
