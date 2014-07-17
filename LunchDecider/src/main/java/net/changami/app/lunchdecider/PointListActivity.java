@@ -17,9 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by chan_gami on 2014/04/19.
- */
 public class PointListActivity extends ListActivity {
 
     static SQLiteDatabase mydb;

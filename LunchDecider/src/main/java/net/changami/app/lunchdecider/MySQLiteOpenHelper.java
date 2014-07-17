@@ -4,9 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by chan_gami on 2014/04/17.
- */
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
     static final String DB = "sqlite_lunch.db";

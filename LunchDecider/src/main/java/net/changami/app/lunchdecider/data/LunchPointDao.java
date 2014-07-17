@@ -11,9 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by chan_gami on 2014/05/16.
- */
 public class LunchPointDao {
 
     private static final String TABLE_NAME = "lunch_point";
@@ -22,7 +19,7 @@ public class LunchPointDao {
     private static final String COLUMN_LAST_TIME = "last_time";
     private static final String[] COLUMNS = {COLUMN_ID, COLUMN_POINT_NAME, COLUMN_LAST_TIME};
 
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPANESE);
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.JAPANESE);
 
     // SQLiteDatabase
     private SQLiteDatabase db;
@@ -53,7 +50,7 @@ public class LunchPointDao {
             entity.setPointName(cursor.getString(1));
             //SQLiteはDate型ないもん
             try {
-                entity.setLastTime(SDF.parse(cursor.getString(2)));
+                entity.setLastTime(SIMPLE_DATE_FORMAT.parse(cursor.getString(2)));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -73,7 +70,7 @@ public class LunchPointDao {
         ContentValues values = new ContentValues();
         values.put(COLUMN_POINT_NAME, pointName);
         //SQLiteはDate型ないもん
-        values.put(COLUMN_LAST_TIME, SDF.format(new Date()));
+        values.put(COLUMN_LAST_TIME, SIMPLE_DATE_FORMAT.format(new Date()));
         return db.insert(TABLE_NAME, null, values);
     }
 
@@ -87,7 +84,7 @@ public class LunchPointDao {
         ContentValues values = new ContentValues();
         values.put(COLUMN_POINT_NAME, entity.getPointName());
         //SQLiteはDate型ないもん
-        values.put(COLUMN_LAST_TIME, SDF.format(entity.getLastTime()));
+        values.put(COLUMN_LAST_TIME, SIMPLE_DATE_FORMAT.format(entity.getLastTime()));
         String where = COLUMN_ID + "=" + entity.getId();
         return db.update(TABLE_NAME, values, where, null);
     }
