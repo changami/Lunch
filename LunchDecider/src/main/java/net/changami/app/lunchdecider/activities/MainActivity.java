@@ -1,57 +1,29 @@
 package net.changami.app.lunchdecider.activities;
 
-
-import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import net.changami.app.lunchdecider.AddActivity;
-import net.changami.app.lunchdecider.MySQLiteOpenHelper;
 import net.changami.app.lunchdecider.PointListActivity;
 import net.changami.app.lunchdecider.R;
-import net.changami.app.lunchdecider.data.LunchPointDao;
-import net.changami.app.lunchdecider.data.LunchPointEntity;
+import net.changami.app.lunchdecider.fragment.SuggestFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-public class MainActivity extends Activity {
-
-    static SQLiteDatabase mydb;
-    static LunchPointDao dao;
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.inject(this);
 
-        MySQLiteOpenHelper mHelper = new MySQLiteOpenHelper(getApplicationContext());
-        mydb = mHelper.getWritableDatabase();
-        dao = new LunchPointDao(mydb);
-    }
-
-    @OnClick(R.id.decide_button)
-    public void onClick() {
-
-        final List<String> records = new ArrayList<String>();
-
-        List<LunchPointEntity> entities = dao.findAll();
-        for (LunchPointEntity entity : entities) {
-            records.add(entity.getPointName());
-        }
-
-        if (records.size() == 0) {
-            Toast.makeText(MainActivity.this, "おひるごはんたべるところがありません", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(MainActivity.this, records.get(new Random().nextInt(records.size())) + "に行きましょう", Toast.LENGTH_SHORT).show();
-        }
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        // SuggestFragmentを初期表示とする
+        transaction.replace(R.id.fragments, SuggestFragment.newInstance());
+        transaction.commit();
     }
 
     @Override
