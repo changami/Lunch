@@ -7,9 +7,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import net.changami.app.lunchdecider.AddActivity;
 import net.changami.app.lunchdecider.PointListActivity;
 import net.changami.app.lunchdecider.R;
+import net.changami.app.lunchdecider.fragment.AddFragment;
 import net.changami.app.lunchdecider.fragment.SuggestFragment;
 
 public class MainActivity extends FragmentActivity {
@@ -36,7 +36,14 @@ public class MainActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_add) {
-            startActivity(new Intent(this, AddActivity.class));
+
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+
+            transaction.replace(R.id.fragments, AddFragment.newInstance());
+            transaction.addToBackStack(null);
+            transaction.commit();
+
             return true;
         }
         if (id == R.id.action_list) {
