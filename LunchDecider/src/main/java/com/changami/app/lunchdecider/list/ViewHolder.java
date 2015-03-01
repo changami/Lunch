@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider.list;
+package com.changami.app.lunchdecider.list;
 
 import android.widget.TextView;
 

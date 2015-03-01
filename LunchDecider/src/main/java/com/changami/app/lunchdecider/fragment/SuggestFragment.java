@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider.fragment;
+package com.changami.app.lunchdecider.fragment;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import net.changami.app.lunchdecider.MySQLiteOpenHelper;
-import net.changami.app.lunchdecider.R;
-import net.changami.app.lunchdecider.data.LunchPointDao;
-import net.changami.app.lunchdecider.data.LunchPointEntity;
+import com.changami.app.lunchdecider.MySQLiteOpenHelper;
+import com.changami.app.lunchdecider.R;
+import com.changami.app.lunchdecider.data.LunchPointDao;
+import com.changami.app.lunchdecider.data.LunchPointEntity;
 
 import java.util.ArrayList;
 import java.util.List;
