@@ -18,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Locatio
     double longitude;
 
     GoogleMap map;
+
+    ArrayList<Marker> markers = new ArrayList<Marker>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,10 +193,11 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Locatio
 
                 // 取得したプレイスの数だけマーカーを置く
                 for (PlaceEntity place : places) {
-                    map.addMarker(new MarkerOptions()
+                    Marker marker = map.addMarker(new MarkerOptions()
                             .position(new LatLng(place.getLatitude(), place.getLongitude()))
                             .title(place.getName() + "\n"
                                     + place.getVicinity()));
+                    markers.add(marker);
                 }
 
                 // close dialog
@@ -203,6 +207,18 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Locatio
             }
         };
         task.execute(types);
+    }
+
+    @OnClick(R.id.clear_button)
+    void onClearing() {
+        int markerCount = markers.size();
+        // 排他処理
+        if (markers == null || markerCount == 0) return;
+
+        for (int i = 0; i < markerCount; i++) {
+            markers.get(i).remove();
+        }
+        markers.clear();
     }
 
     @Override
