@@ -3,9 +3,8 @@ package com.changami.app.lunchdecider.activities;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.location.Criteria;
+import android.content.Context;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,9 +13,11 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.changami.app.lunchdecider.R;
 import com.changami.app.lunchdecider.data.PlaceEntity;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -33,9 +34,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MapActivity extends Activity implements OnMapReadyCallback, LocationListener {
+public class MapActivity extends Activity implements OnMapReadyCallback {
 
-    LocationManager manager;
+    // 現在の緯度経度はGooglePlacesAPIへのPATHで使用する
     double latitude;
     double longitude;
 
@@ -53,15 +54,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Locatio
                 getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_for_map, MapFragment.newInstance());
         fragmentTransaction.commit();
-
-        manager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        // 低精度・低消費電力でお願いします
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        String provider = manager.getBestProvider(criteria, true);
-        manager.requestLocationUpdates(provider, 0, 0, MapActivity.this);
     }
 
     @Override
@@ -80,7 +72,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Locatio
     @Override
     protected void onPause() {
         super.onPause();
-        manager.removeUpdates(this);
     }
 
     @Override
@@ -90,7 +81,32 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Locatio
         map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
         // 現在地を表示するボタンの有無
         map.setMyLocationEnabled(true);
-        // TODO:現在地中心に表示する
+
+        // 現在地中心に表示する
+        CameraPosition.Builder builder = new CameraPosition.Builder().zoom(15);
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = manager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        if (location == null) {
+            // getLastKnownLocationを実行して、nullが返ってきた場合はGPSの最後に取得した位置を取得する。
+            location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        }
+        // locationが取得できている場合はカメラの初期位置を変動させる。
+        if (location != null) {
+            builder.target(new LatLng(location.getLatitude(), location.getLongitude()));
+            map.animateCamera(CameraUpdateFactory.newCameraPosition(builder.build()));
+            // 設定した緯度経度も保持しておく
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+
+        // LocationChangeListenerをSet
+        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+        });
     }
 
     public URL createRequestUrl(double latitude, double longitude, String rankBy, Boolean sensor, String types, Boolean openNow) {
@@ -219,26 +235,5 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Locatio
             markers.get(i).remove();
         }
         markers.clear();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
     }
 }
