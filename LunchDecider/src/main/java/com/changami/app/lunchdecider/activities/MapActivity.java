@@ -74,11 +74,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
     }
 
-    @OnClick(R.id.search_button)
-    void onClicking() {
-        searchNearPlace("");
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -235,25 +230,30 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         task.execute(types);
     }
 
+    @OnClick(R.id.search_button)
+    void onSearchClick() {
+        searchNearPlace("");
+    }
+
     @OnClick(R.id.clear_button)
-    void onClearing() {
+    void onPinClearClick() {
         int markerCount = markers.size();
         // 排他処理
         if (markers == null || markerCount == 0) return;
 
-        for (int i = 0; i < markerCount; i++) {
-            markers.get(i).remove();
+        for (Marker marker : markers) {
+            marker.remove();
         }
         markers.clear();
     }
 
     @OnClick(R.id.show_linear_search_button)
-    void onKeywordSearching() {
+    void onKeywordSearchFormShowClick() {
         linearSearch.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.keyword_search_cancel_button)
-    void onKeywordSearchingCancel() {
+    void onKeywordSearchingCancelClick() {
         linearSearch.setVisibility(View.GONE);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(keywordInputEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
