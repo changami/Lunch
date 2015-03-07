@@ -136,6 +136,16 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         return resultURL;
     }
 
+    public String inputStreamToString(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        int bytesRead;
+        byte[] buffer = new byte[1024];
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        return outputStream.toString();
+    }
+
     public void searchNearPlace(String types) {
         final String RANK_BY = "distance"; //距離が近い順に取得する
         final Boolean SENSOR = true;
@@ -168,15 +178,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
                     con.connect();
                     InputStream is = new BufferedInputStream(con.getInputStream());
 
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-                    int bytesRead = -1;
-                    byte[] buffer = new byte[1024];
-                    while ((bytesRead = is.read(buffer)) != -1) {
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
-
-                    data = outputStream.toString();
+                    data = inputStreamToString(is);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
