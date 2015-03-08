@@ -136,6 +136,35 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         return resultURL;
     }
 
+    /**
+     * キーワードに一致するプレイスをリクエストするためのURLを生成する。
+     *
+     * @param latitude  double
+     * @param longitude double
+     * @param keyword   String
+     * @return URL
+     */
+    public URL createRequestUrl(double latitude, double longitude, String keyword) {
+        String radius = "5000";
+
+        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
+        sb.append("?location=" + latitude + "," + longitude);
+        sb.append("&radius=" + radius);
+        sb.append("&sensor=false");
+        sb.append("&keyword=" + keyword);
+        sb.append("&key=" + getResources().getString(R.string.api_key));
+
+        URL resultURL;
+        try {
+            resultURL = new URL(sb.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            resultURL = null;
+        }
+
+        return resultURL;
+    }
+
     public String inputStreamToString(InputStream inputStream) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         int bytesRead;
