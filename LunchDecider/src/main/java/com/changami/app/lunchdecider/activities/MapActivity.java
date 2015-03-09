@@ -114,20 +114,28 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         });
     }
 
-    public URL createRequestUrl(double latitude, double longitude, String rankBy, Boolean sensor, String types, Boolean openNow) {
-        StringBuilder urlStrBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
-        urlStrBuilder.append("?location=" + latitude + "," + longitude);
-        urlStrBuilder.append("&rankby=" + rankBy);
-        urlStrBuilder.append("&sensor=" + sensor.toString());
-        urlStrBuilder.append("&types=" + types);
-        urlStrBuilder.append("&opennow=" + openNow.toString());
-        urlStrBuilder.append("&key=" + getResources().getString(R.string.api_key));
+    /**
+     * カテゴリー[restaurant, cafe, bakery, food]に一致する
+     * 最寄りのプレイスをリクエストするためのURLを生成する。
+     *
+     * @param latitude  double
+     * @param longitude double
+     * @return URL
+     */
+    public URL createRequestUrl(double latitude, double longitude) {
+        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
+        sb.append("?location=" + latitude + "," + longitude);
+        sb.append("&rankby=distance");
+        sb.append("&sensor=false");
+        sb.append("&types=restaurant|cafe|bakery|food");
+        sb.append("&opennow=true");
+        sb.append("&key=" + getResources().getString(R.string.api_key));
 
-        Log.e("Request URL: ", urlStrBuilder.toString());
+        Log.d("Request URL: ", sb.toString());
 
         URL resultURL;
         try {
-            resultURL = new URL(urlStrBuilder.toString());
+            resultURL = new URL(sb.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
             resultURL = null;
@@ -175,11 +183,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         return outputStream.toString();
     }
 
-    public void searchNearPlace(String types) {
-        final String RANK_BY = "distance"; //距離が近い順に取得する
-        final Boolean SENSOR = true;
-        final String TYPES = "restaurant|cafe|bakery"; //検索するプレイスのタイプ
-        final Boolean OPEN_NOW = false; //実行時に営業中のものだけを取得するかどうか
+    public void searchNearPlace() {
 
         AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
 
@@ -197,7 +201,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
             protected String doInBackground(String... types) {
 
                 String data = "";
-                URL url = createRequestUrl(latitude, longitude, RANK_BY, SENSOR, TYPES, OPEN_NOW);
+                URL url = createRequestUrl(latitude, longitude);
 
                 // JSONを取得
                 HttpURLConnection con;
@@ -258,12 +262,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
                 }
             }
         };
-        task.execute(types);
+        task.execute();
     }
 
     @OnClick(R.id.search_button)
     void onSearchClick() {
-        searchNearPlace("");
+        searchNearPlace();
     }
 
     @OnClick(R.id.clear_button)
