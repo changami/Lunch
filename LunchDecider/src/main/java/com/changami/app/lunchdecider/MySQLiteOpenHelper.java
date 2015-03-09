@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider;
+package com.changami.app.lunchdecider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

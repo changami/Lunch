@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider.activities;
+package com.changami.app.lunchdecider.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,10 +7,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import net.changami.app.lunchdecider.PointListActivity;
-import net.changami.app.lunchdecider.R;
-import net.changami.app.lunchdecider.fragment.AddFragment;
-import net.changami.app.lunchdecider.fragment.SuggestFragment;
+import com.changami.app.lunchdecider.PointListActivity;
+import com.changami.app.lunchdecider.R;
+import com.changami.app.lunchdecider.fragment.AddFragment;
+import com.changami.app.lunchdecider.fragment.SuggestFragment;
 
 public class MainActivity extends FragmentActivity {
 

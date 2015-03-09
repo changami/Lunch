@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider;
+package com.changami.app.lunchdecider;
 
 import android.app.ListActivity;
 import android.database.sqlite.SQLiteDatabase;
@@ -7,10 +7,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import net.changami.app.lunchdecider.data.LunchPointDao;
-import net.changami.app.lunchdecider.data.LunchPointEntity;
-import net.changami.app.lunchdecider.list.ListItem;
-import net.changami.app.lunchdecider.list.ListItemAdapter;
+import com.changami.app.lunchdecider.data.LunchPointEntity;
+import com.changami.app.lunchdecider.list.ListItem;
+import com.changami.app.lunchdecider.data.LunchPointDao;
+import com.changami.app.lunchdecider.list.ListItemAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider.fragment;
+package com.changami.app.lunchdecider.fragment;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import net.changami.app.lunchdecider.MySQLiteOpenHelper;
-import net.changami.app.lunchdecider.R;
-import net.changami.app.lunchdecider.data.LunchPointDao;
+import com.changami.app.lunchdecider.MySQLiteOpenHelper;
+import com.changami.app.lunchdecider.R;
+import com.changami.app.lunchdecider.data.LunchPointDao;
 
 public class AddFragment extends Fragment {
 

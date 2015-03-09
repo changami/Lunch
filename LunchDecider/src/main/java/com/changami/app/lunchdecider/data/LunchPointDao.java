@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider.data;
+package com.changami.app.lunchdecider.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;

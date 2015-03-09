@@ -1,4 +1,4 @@
-package net.changami.app.lunchdecider.list;
+package com.changami.app.lunchdecider.list;
 
 /**
  * Created by chan_gami on 2014/05/18.
