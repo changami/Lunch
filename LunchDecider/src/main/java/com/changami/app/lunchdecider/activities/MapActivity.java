@@ -9,12 +9,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import com.changami.app.lunchdecider.R;
 import com.changami.app.lunchdecider.data.PlaceEntity;
@@ -48,11 +43,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     GoogleMap map;
 
     ArrayList<Marker> markers = new ArrayList<Marker>();
-
-    @InjectView(R.id.linear_search)
-    LinearLayout linearSearch;
-    @InjectView(R.id.keyword_search_input_edit_text)
-    EditText keywordInputEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,8 +260,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         searchNearPlace();
     }
 
-    @OnClick(R.id.clear_button)
-    void onPinClearClick() {
+
+    public void clearAllPin() {
         int markerCount = markers.size();
         // 排他処理
         if (markers == null || markerCount == 0) return;
@@ -280,17 +270,5 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
             marker.remove();
         }
         markers.clear();
-    }
-
-    @OnClick(R.id.show_linear_search_button)
-    void onKeywordSearchFormShowClick() {
-        linearSearch.setVisibility(View.VISIBLE);
-    }
-
-    @OnClick(R.id.keyword_search_cancel_button)
-    void onKeywordSearchingCancelClick() {
-        linearSearch.setVisibility(View.GONE);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(keywordInputEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

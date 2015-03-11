@@ -9,59 +9,40 @@
         android:id="@+id/linear_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/nearby_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_nearby"/>
+
+        <Button
+            android:id="@+id/favorite_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_favorite"/>
+
+        <Button
+            android:id="@+id/category_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_category"/>
+
+        <Button
             android:id="@+id/search_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/button_search"/>
-
-        <Button
-            android:id="@+id/clear_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_clear"/>
-
-        <Button
-            android:id="@+id/show_linear_search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_keyword_search"/>
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fragment_for_map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/linear_map"/>
-
-    <LinearLayout
-        android:id="@+id/linear_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/linear_map"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <EditText
-            android:id="@+id/keyword_search_input_edit_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.9"/>
-
-        <Button
-            android:id="@+id/keyword_search_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Go"/>
-
-        <Button
-            android:id="@+id/keyword_search_cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cancel"/>
-
-    </LinearLayout>
+        android:layout_below="@id/linear_map"/>
 </RelativeLayout>
