@@ -18,5 +18,7 @@
 
     <string name="button_clear">削除</string>
 
+    <string name="can_not_catch_location">現在地が取得できていません。位置情報の設定を確認してください。</string>
+
     <string name="api_key"></string>
 </resources>

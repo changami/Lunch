@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.changami.app.lunchdecider.R;
@@ -105,19 +106,19 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     }
 
     /**
-     * カテゴリー[restaurant, cafe, bakery, food]に一致する
+     * カテゴリー[restaurant, cafe, bakery, food, bar]に一致する
      * 最寄りのプレイスをリクエストするためのURLを生成する。
      *
      * @param latitude  double
      * @param longitude double
      * @return URL
      */
-    public URL createRequestUrl(double latitude, double longitude) {
+    public URL createNearbyRequestUrl(double latitude, double longitude) {
         StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
         sb.append("?location=" + latitude + "," + longitude);
         sb.append("&rankby=distance");
         sb.append("&sensor=false");
-        sb.append("&types=restaurant|cafe|bakery|food");
+        sb.append("&types=restaurant|cafe|bakery|food|bar");
         sb.append("&opennow=true");
         sb.append("&key=" + getResources().getString(R.string.api_key));
 
@@ -173,9 +174,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         return outputStream.toString();
     }
 
-    public void searchNearPlace() {
+    public void searchNearPlace(URL url) {
 
-        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+        AsyncTask<URL, Void, String> task = new AsyncTask<URL, Void, String>() {
 
             private ProgressDialog progressDialog;
 
@@ -188,15 +189,14 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
             }
 
             @Override
-            protected String doInBackground(String... types) {
+            protected String doInBackground(URL... urls) {
 
                 String data = "";
-                URL url = createRequestUrl(latitude, longitude);
 
                 // JSONを取得
                 HttpURLConnection con;
                 try {
-                    con = (HttpURLConnection) url.openConnection();
+                    con = (HttpURLConnection) urls[0].openConnection();
                     con.setRequestMethod("GET");
                     con.connect();
                     InputStream is = new BufferedInputStream(con.getInputStream());
@@ -252,12 +252,18 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
                 }
             }
         };
-        task.execute();
+        task.execute(url);
     }
 
-    @OnClick(R.id.search_button)
-    void onSearchClick() {
-        searchNearPlace();
+    @OnClick(R.id.nearby_button)
+    void onNearbySearchClick() {
+        clearAllPin();
+        if (latitude == 0 && longitude == 0) {
+            Toast.makeText(MapActivity.this, getString(R.string.can_not_catch_location), Toast.LENGTH_LONG).show();
+            return;
+        }
+        URL url = createNearbyRequestUrl(latitude, longitude);
+        searchNearPlace(url);
     }
 
 
