@@ -142,6 +142,36 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     }
 
     /**
+     * 引数categoryと一致するtypesを持った最寄りのプレイスをリクエストするためのURLを生成する。
+     *
+     * @param latitude  double
+     * @param longitude double
+     * @param category  String
+     * @return URL
+     */
+    public URL createChooseCategoryUrl(double latitude, double longitude, String category) {
+        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
+        sb.append("?location=" + latitude + "," + longitude);
+        sb.append("&rankby=distance");
+        sb.append("&sensor=false");
+        sb.append("&types=" + category);
+        sb.append("&opennow=true");
+        sb.append("&key=" + getResources().getString(R.string.api_key));
+
+        Log.d("Request URL: ", sb.toString());
+
+        URL resultURL;
+        try {
+            resultURL = new URL(sb.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            resultURL = null;
+        }
+
+        return resultURL;
+    }
+
+    /**
      * キーワードに一致するプレイスをリクエストするためのURLを生成する。
      *
      * @param latitude  double
@@ -279,6 +309,71 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         } else {
             categoryLinearLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    @OnClick(R.id.category_restaurant)
+    void onCategoryRestaurantClick() {
+        // 既にピンが刺さっている場合は消す
+        clearAllPin();
+        // カテゴリー選択LinearLayoutを非表示
+        categoryLinearLayout.setVisibility(View.GONE);
+        // value: restaurant
+        String category = getResources().getString(R.string.button_category_restaurant);
+        URL url = createChooseCategoryUrl(latitude, longitude, category);
+
+        searchNearPlace(url);
+    }
+
+    @OnClick(R.id.category_cafe)
+    void onCategoryCafeClick() {
+        // 既にピンが刺さっている場合は消す
+        clearAllPin();
+        // カテゴリー選択LinearLayoutを非表示
+        categoryLinearLayout.setVisibility(View.GONE);
+        // value: cafe
+        String category = getResources().getString(R.string.button_category_cafe);
+        URL url = createChooseCategoryUrl(latitude, longitude, category);
+
+        searchNearPlace(url);
+    }
+
+    @OnClick(R.id.category_bakery)
+    void onCategoryBakeryClick() {
+        // 既にピンが刺さっている場合は消す
+        clearAllPin();
+        // カテゴリー選択LinearLayoutを非表示
+        categoryLinearLayout.setVisibility(View.GONE);
+        // value: cafe
+        String category = getResources().getString(R.string.button_category_bakery);
+        URL url = createChooseCategoryUrl(latitude, longitude, category);
+
+        searchNearPlace(url);
+    }
+
+    @OnClick(R.id.category_food)
+    void onCategoryFoodClick() {
+        // 既にピンが刺さっている場合は消す
+        clearAllPin();
+        // カテゴリー選択LinearLayoutを非表示
+        categoryLinearLayout.setVisibility(View.GONE);
+        // value: cafe
+        String category = getResources().getString(R.string.button_category_food);
+        URL url = createChooseCategoryUrl(latitude, longitude, category);
+
+        searchNearPlace(url);
+    }
+
+    @OnClick(R.id.category_bar)
+    void onCategoryBarClick() {
+        // 既にピンが刺さっている場合は消す
+        clearAllPin();
+        // カテゴリー選択LinearLayoutを非表示
+        categoryLinearLayout.setVisibility(View.GONE);
+        // value: cafe
+        String category = getResources().getString(R.string.button_category_bar);
+        URL url = createChooseCategoryUrl(latitude, longitude, category);
+
+        searchNearPlace(url);
     }
 
     public void clearAllPin() {
