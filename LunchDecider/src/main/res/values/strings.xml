@@ -16,6 +16,12 @@
     <string name="button_category">Category</string>
     <string name="button_search">Search</string>
 
+    <string name="button_category_restaurant">restaurant</string>
+    <string name="button_category_cafe">cafe</string>
+    <string name="button_category_bakery">bakery</string>
+    <string name="button_category_food">food</string>
+    <string name="button_category_bar">bar</string>
+
     <string name="button_clear">削除</string>
 
     <string name="can_not_catch_location">現在地が取得できていません。位置情報の設定を確認してください。</string>

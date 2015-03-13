@@ -9,8 +9,11 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import butterknife.ButterKnife;
+import butterknife.InjectView;
 import butterknife.OnClick;
 import com.changami.app.lunchdecider.R;
 import com.changami.app.lunchdecider.data.PlaceEntity;
@@ -44,6 +47,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     GoogleMap map;
 
     ArrayList<Marker> markers = new ArrayList<Marker>();
+
+    @InjectView(R.id.linear_category)
+    LinearLayout categoryLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -266,6 +272,14 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         searchNearPlace(url);
     }
 
+    @OnClick(R.id.category_button)
+    void onCategorySearchClick() {
+        if (categoryLinearLayout.getVisibility() == View.VISIBLE) {
+            categoryLinearLayout.setVisibility(View.GONE);
+        } else {
+            categoryLinearLayout.setVisibility(View.VISIBLE);
+        }
+    }
 
     public void clearAllPin() {
         int markerCount = markers.size();
