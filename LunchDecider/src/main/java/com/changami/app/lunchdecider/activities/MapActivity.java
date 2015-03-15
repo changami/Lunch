@@ -221,7 +221,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         return outputStream.toString();
     }
 
-    public void searchNearPlace(URL url) {
+    public void connectHTTPToGetRequestDataFromURLAndAddMarkersToMap(URL url) {
 
         AsyncTask<URL, Void, String> task = new AsyncTask<URL, Void, String>() {
 
@@ -310,7 +310,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
             return;
         }
         URL url = createNearbyRequestUrl(latitude, longitude);
-        searchNearPlace(url);
+        connectHTTPToGetRequestDataFromURLAndAddMarkersToMap(url);
     }
 
     @OnClick(R.id.category_button)
@@ -369,7 +369,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         categoryLinearLayout.setVisibility(View.GONE);
 
         URL url = createChooseCategoryUrl(latitude, longitude, category);
-        searchNearPlace(url);
+        connectHTTPToGetRequestDataFromURLAndAddMarkersToMap(url);
     }
 
     public void clearAllPin() {
