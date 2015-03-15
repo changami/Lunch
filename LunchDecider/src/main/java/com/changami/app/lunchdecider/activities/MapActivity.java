@@ -40,6 +40,17 @@ import java.util.ArrayList;
 
 public class MapActivity extends Activity implements OnMapReadyCallback {
 
+    static final String REQUEST_METHOD = "GET";
+    static final String REQUEST_URL_BASE = "https://maps.googleapis.com/maps/api/place/search/json";
+    static final String REQUEST_URL_LOCATION = "?location=";
+    static final String REQUEST_URL_RADIUS = "&radius=";
+    static final String REQUEST_URL_TYPES = "&types=";
+    static final String REQUEST_URL_KEYWORD = "&keyword=";
+    static final String REQUEST_URL_KEY = "&key=";
+    static final String REQUEST_URL_RANKBY_DISTANCE = "&rankby=distance";
+    static final String REQUEST_URL_SENSOR_FALSE = "&sensor=false";
+    static final String REQUEST_URL_OPENNOW_TRUE = "&opennow=true";
+
     // 現在の緯度経度はGooglePlacesAPIへのPATHで使用する
     double latitude;
     double longitude;
@@ -120,13 +131,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
      * @return URL
      */
     public URL createNearbyRequestUrl(double latitude, double longitude) {
-        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
-        sb.append("?location=" + latitude + "," + longitude);
-        sb.append("&rankby=distance");
-        sb.append("&sensor=false");
-        sb.append("&types=restaurant|cafe|bakery|food|bar");
-        sb.append("&opennow=true");
-        sb.append("&key=" + getResources().getString(R.string.api_key));
+        StringBuilder sb = new StringBuilder(REQUEST_URL_BASE);
+        sb.append(REQUEST_URL_LOCATION + latitude + "," + longitude);
+        sb.append(REQUEST_URL_RANKBY_DISTANCE);
+        sb.append(REQUEST_URL_SENSOR_FALSE);
+        sb.append(REQUEST_URL_TYPES + "restaurant|cafe|bakery|food|bar");
+        sb.append(REQUEST_URL_OPENNOW_TRUE);
+        sb.append(REQUEST_URL_KEY + getResources().getString(R.string.api_key));
 
         Log.d("Request URL: ", sb.toString());
 
@@ -150,13 +161,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
      * @return URL
      */
     public URL createChooseCategoryUrl(double latitude, double longitude, String category) {
-        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
-        sb.append("?location=" + latitude + "," + longitude);
-        sb.append("&rankby=distance");
-        sb.append("&sensor=false");
-        sb.append("&types=" + category);
-        sb.append("&opennow=true");
-        sb.append("&key=" + getResources().getString(R.string.api_key));
+        StringBuilder sb = new StringBuilder(REQUEST_URL_BASE);
+        sb.append(REQUEST_URL_LOCATION + latitude + "," + longitude);
+        sb.append(REQUEST_URL_RANKBY_DISTANCE);
+        sb.append(REQUEST_URL_SENSOR_FALSE);
+        sb.append(REQUEST_URL_TYPES + category);
+        sb.append(REQUEST_URL_OPENNOW_TRUE);
+        sb.append(REQUEST_URL_KEY + getResources().getString(R.string.api_key));
 
         Log.d("Request URL: ", sb.toString());
 
@@ -182,12 +193,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     public URL createRequestUrl(double latitude, double longitude, String keyword) {
         String radius = "5000";
 
-        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
-        sb.append("?location=" + latitude + "," + longitude);
-        sb.append("&radius=" + radius);
-        sb.append("&sensor=false");
-        sb.append("&keyword=" + keyword);
-        sb.append("&key=" + getResources().getString(R.string.api_key));
+        StringBuilder sb = new StringBuilder(REQUEST_URL_BASE);
+        sb.append(REQUEST_URL_LOCATION + latitude + "," + longitude);
+        sb.append(REQUEST_URL_RADIUS + radius);
+        sb.append(REQUEST_URL_SENSOR_FALSE);
+        sb.append(REQUEST_URL_KEYWORD + keyword);
+        sb.append(REQUEST_URL_KEY + getResources().getString(R.string.api_key));
 
         URL resultURL;
         try {
@@ -233,7 +244,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
                 HttpURLConnection con;
                 try {
                     con = (HttpURLConnection) urls[0].openConnection();
-                    con.setRequestMethod("GET");
+                    con.setRequestMethod(REQUEST_METHOD);
                     con.connect();
                     InputStream is = new BufferedInputStream(con.getInputStream());
 
