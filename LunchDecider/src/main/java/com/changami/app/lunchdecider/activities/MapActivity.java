@@ -10,9 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -41,6 +40,17 @@ import java.util.ArrayList;
 
 public class MapActivity extends Activity implements OnMapReadyCallback {
 
+    static final String REQUEST_METHOD = "GET";
+    static final String REQUEST_URL_BASE = "https://maps.googleapis.com/maps/api/place/search/json";
+    static final String REQUEST_URL_LOCATION = "?location=";
+    static final String REQUEST_URL_RADIUS = "&radius=";
+    static final String REQUEST_URL_TYPES = "&types=";
+    static final String REQUEST_URL_KEYWORD = "&keyword=";
+    static final String REQUEST_URL_KEY = "&key=";
+    static final String REQUEST_URL_RANKBY_DISTANCE = "&rankby=distance";
+    static final String REQUEST_URL_SENSOR_FALSE = "&sensor=false";
+    static final String REQUEST_URL_OPENNOW_TRUE = "&opennow=true";
+
     // 現在の緯度経度はGooglePlacesAPIへのPATHで使用する
     double latitude;
     double longitude;
@@ -49,10 +59,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
 
     ArrayList<Marker> markers = new ArrayList<Marker>();
 
-    @InjectView(R.id.linear_search)
-    LinearLayout linearSearch;
-    @InjectView(R.id.keyword_search_input_edit_text)
-    EditText keywordInputEditText;
+    @InjectView(R.id.linear_category)
+    LinearLayout categoryLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,21 +123,51 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     }
 
     /**
-     * カテゴリー[restaurant, cafe, bakery, food]に一致する
+     * カテゴリー[restaurant, cafe, bakery, food, bar]に一致する
      * 最寄りのプレイスをリクエストするためのURLを生成する。
      *
      * @param latitude  double
      * @param longitude double
      * @return URL
      */
-    public URL createRequestUrl(double latitude, double longitude) {
-        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
-        sb.append("?location=" + latitude + "," + longitude);
-        sb.append("&rankby=distance");
-        sb.append("&sensor=false");
-        sb.append("&types=restaurant|cafe|bakery|food");
-        sb.append("&opennow=true");
-        sb.append("&key=" + getResources().getString(R.string.api_key));
+    public URL createNearbyRequestUrl(double latitude, double longitude) {
+        StringBuilder sb = new StringBuilder(REQUEST_URL_BASE);
+        sb.append(REQUEST_URL_LOCATION + latitude + "," + longitude);
+        sb.append(REQUEST_URL_RANKBY_DISTANCE);
+        sb.append(REQUEST_URL_SENSOR_FALSE);
+        sb.append(REQUEST_URL_TYPES + "restaurant|cafe|bakery|food|bar");
+        sb.append(REQUEST_URL_OPENNOW_TRUE);
+        sb.append(REQUEST_URL_KEY + getResources().getString(R.string.api_key));
+
+        Log.d("Request URL: ", sb.toString());
+
+        URL resultURL;
+        try {
+            resultURL = new URL(sb.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            resultURL = null;
+        }
+
+        return resultURL;
+    }
+
+    /**
+     * 引数categoryと一致するtypesを持った最寄りのプレイスをリクエストするためのURLを生成する。
+     *
+     * @param latitude  double
+     * @param longitude double
+     * @param category  String
+     * @return URL
+     */
+    public URL createChooseCategoryUrl(double latitude, double longitude, String category) {
+        StringBuilder sb = new StringBuilder(REQUEST_URL_BASE);
+        sb.append(REQUEST_URL_LOCATION + latitude + "," + longitude);
+        sb.append(REQUEST_URL_RANKBY_DISTANCE);
+        sb.append(REQUEST_URL_SENSOR_FALSE);
+        sb.append(REQUEST_URL_TYPES + category);
+        sb.append(REQUEST_URL_OPENNOW_TRUE);
+        sb.append(REQUEST_URL_KEY + getResources().getString(R.string.api_key));
 
         Log.d("Request URL: ", sb.toString());
 
@@ -155,12 +193,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
     public URL createRequestUrl(double latitude, double longitude, String keyword) {
         String radius = "5000";
 
-        StringBuilder sb = new StringBuilder("https://maps.googleapis.com/maps/api/place/search/json");
-        sb.append("?location=" + latitude + "," + longitude);
-        sb.append("&radius=" + radius);
-        sb.append("&sensor=false");
-        sb.append("&keyword=" + keyword);
-        sb.append("&key=" + getResources().getString(R.string.api_key));
+        StringBuilder sb = new StringBuilder(REQUEST_URL_BASE);
+        sb.append(REQUEST_URL_LOCATION + latitude + "," + longitude);
+        sb.append(REQUEST_URL_RADIUS + radius);
+        sb.append(REQUEST_URL_SENSOR_FALSE);
+        sb.append(REQUEST_URL_KEYWORD + keyword);
+        sb.append(REQUEST_URL_KEY + getResources().getString(R.string.api_key));
 
         URL resultURL;
         try {
@@ -183,9 +221,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         return outputStream.toString();
     }
 
-    public void searchNearPlace() {
+    public void connectHTTPToGetRequestDataFromURLAndAddMarkersToMap(URL url) {
 
-        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+        AsyncTask<URL, Void, String> task = new AsyncTask<URL, Void, String>() {
 
             private ProgressDialog progressDialog;
 
@@ -198,16 +236,15 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
             }
 
             @Override
-            protected String doInBackground(String... types) {
+            protected String doInBackground(URL... urls) {
 
                 String data = "";
-                URL url = createRequestUrl(latitude, longitude);
 
                 // JSONを取得
                 HttpURLConnection con;
                 try {
-                    con = (HttpURLConnection) url.openConnection();
-                    con.setRequestMethod("GET");
+                    con = (HttpURLConnection) urls[0].openConnection();
+                    con.setRequestMethod(REQUEST_METHOD);
                     con.connect();
                     InputStream is = new BufferedInputStream(con.getInputStream());
 
@@ -262,16 +299,80 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
                 }
             }
         };
-        task.execute();
+        task.execute(url);
     }
 
-    @OnClick(R.id.search_button)
-    void onSearchClick() {
-        searchNearPlace();
+    @OnClick(R.id.nearby_button)
+    void onNearbySearchClick() {
+        clearAllPin();
+        if (latitude == 0 && longitude == 0) {
+            Toast.makeText(MapActivity.this, getString(R.string.can_not_catch_location), Toast.LENGTH_LONG).show();
+            return;
+        }
+        URL url = createNearbyRequestUrl(latitude, longitude);
+        connectHTTPToGetRequestDataFromURLAndAddMarkersToMap(url);
     }
 
-    @OnClick(R.id.clear_button)
-    void onPinClearClick() {
+    @OnClick(R.id.category_button)
+    void onCategorySearchClick() {
+        if (categoryLinearLayout.getVisibility() == View.VISIBLE) {
+            categoryLinearLayout.setVisibility(View.GONE);
+        } else {
+            categoryLinearLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @OnClick(R.id.category_restaurant)
+    void onCategoryRestaurantClick() {
+        // value: restaurant
+        String category = getResources().getString(R.string.button_category_restaurant);
+        selectedCategorySearch(category);
+    }
+
+    @OnClick(R.id.category_cafe)
+    void onCategoryCafeClick() {
+        // value: cafe
+        String category = getResources().getString(R.string.button_category_cafe);
+        selectedCategorySearch(category);
+    }
+
+    @OnClick(R.id.category_bakery)
+    void onCategoryBakeryClick() {
+        // value: bakery
+        String category = getResources().getString(R.string.button_category_bakery);
+        selectedCategorySearch(category);
+    }
+
+    @OnClick(R.id.category_food)
+    void onCategoryFoodClick() {
+        // value: food
+        String category = getResources().getString(R.string.button_category_food);
+        selectedCategorySearch(category);
+    }
+
+    @OnClick(R.id.category_bar)
+    void onCategoryBarClick() {
+        // value: bar
+        String category = getResources().getString(R.string.button_category_bar);
+        selectedCategorySearch(category);
+    }
+
+    /**
+     * 各カテゴリー検索ボタンが押された際の処理
+     *
+     * @param category String
+     */
+    private void selectedCategorySearch(String category) {
+        // 既にピンが刺さっている場合は消す
+        clearAllPin();
+        // カテゴリー選択LinearLayoutを非表示
+        categoryLinearLayout.setVisibility(View.GONE);
+
+        URL url = createChooseCategoryUrl(latitude, longitude, category);
+        connectHTTPToGetRequestDataFromURLAndAddMarkersToMap(url);
+    }
+
+    public void clearAllPin() {
         int markerCount = markers.size();
         // 排他処理
         if (markers == null || markerCount == 0) return;
@@ -280,17 +381,5 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
             marker.remove();
         }
         markers.clear();
-    }
-
-    @OnClick(R.id.show_linear_search_button)
-    void onKeywordSearchFormShowClick() {
-        linearSearch.setVisibility(View.VISIBLE);
-    }
-
-    @OnClick(R.id.keyword_search_cancel_button)
-    void onKeywordSearchingCancelClick() {
-        linearSearch.setVisibility(View.GONE);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(keywordInputEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }
